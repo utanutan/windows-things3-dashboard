@@ -73,28 +73,44 @@ interface AreaSectionProps {
 function AreaSection({ area, projects, onNewProject }: AreaSectionProps) {
   const [isExpanded, setIsExpanded] = useState(true)
   const pathname = usePathname()
+  const isAreaActive = pathname === `/areas/${encodeURIComponent(area.name)}`
 
   return (
     <div className="space-y-1">
       {/* Area header */}
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-text-secondary hover:bg-background-hover hover:text-text-primary rounded-lg transition-colors group"
-      >
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between w-full px-4 py-2 rounded-lg hover:bg-background-hover transition-colors group">
+        {/* Chevron toggle */}
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="p-1 -ml-1 hover:bg-background-selected rounded transition-colors"
+          aria-label={isExpanded ? 'Collapse' : 'Expand'}
+        >
           <ChevronRightIcon
             className={cn(
-              'w-3 h-3 transition-transform',
+              'w-3 h-3 transition-transform text-text-secondary',
               isExpanded && 'rotate-90'
             )}
           />
+        </button>
+
+        {/* Area name link */}
+        <Link
+          href={`/areas/${encodeURIComponent(area.name)}`}
+          className={cn(
+            'flex items-center gap-2 flex-1 text-sm font-medium transition-colors',
+            isAreaActive
+              ? 'text-primary'
+              : 'text-text-secondary hover:text-text-primary'
+          )}
+        >
           <FolderIcon className="w-4 h-4" />
           <span>{area.name}</span>
           <span className="text-xs text-text-tertiary">
             ({area.project_count})
           </span>
-        </div>
+        </Link>
 
+        {/* Add project button */}
         {onNewProject && (
           <button
             onClick={(e) => {
@@ -107,17 +123,18 @@ function AreaSection({ area, projects, onNewProject }: AreaSectionProps) {
             <PlusCircleIcon className="w-4 h-4" />
           </button>
         )}
-      </button>
+      </div>
 
       {/* Projects list */}
       {isExpanded && projects.length > 0 && (
         <div className="ml-6 space-y-1">
           {projects.map((project) => {
-            const isActive = pathname === `/projects/${project.id}`
+            const projectUrl = `/projects/${encodeURIComponent(project.name)}`
+            const isActive = pathname === projectUrl
             return (
               <Link
                 key={project.id}
-                href={`/projects/${project.id}`}
+                href={projectUrl}
                 className={cn(
                   'flex items-center justify-between px-4 py-2 rounded-lg transition-colors',
                   'text-sm',
