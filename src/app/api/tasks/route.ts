@@ -9,7 +9,10 @@ import { postJSON } from '@/lib/api/client'
 import { serverConfig } from '@/lib/config'
 import { validateTaskTitle, validateDateString, validateTags, validateNotes, sanitizeUserInput } from '@/lib/utils'
 import { applyRateLimit, handleAPIError } from '@/lib/api-helpers'
+import { createLogger } from '@/lib/logger'
 import type { Task, CreateTaskRequest } from '@/lib/types'
+
+const logger = createLogger({ route: 'api/tasks' })
 
 export async function POST(request: NextRequest) {
   // Rate limiting: 10 requests per minute
@@ -18,6 +21,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json() as CreateTaskRequest
+    logger.info({ title: body.title }, 'Creating task')
 
     // Sanitize inputs
     body.title = sanitizeUserInput(body.title)
@@ -68,6 +72,7 @@ export async function POST(request: NextRequest) {
         project_id: body.project_id,
         area_id: body.area_id,
       }
+      logger.info({ taskId: mockTask.id }, 'Created mock task')
       return NextResponse.json<Task>(mockTask, { status: 201 })
     }
 
@@ -76,8 +81,10 @@ export async function POST(request: NextRequest) {
       `${serverConfig.apiBaseUrl}/todos`,
       body
     )
+    logger.info({ taskId: createdTask.id }, 'Created task')
     return NextResponse.json(createdTask, { status: 201 })
   } catch (error) {
+    logger.error({ error }, 'Failed to create task')
     return handleAPIError(error, 'Create task')
   }
 }

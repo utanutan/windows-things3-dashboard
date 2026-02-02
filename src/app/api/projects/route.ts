@@ -10,9 +10,13 @@ import { fetchJSON, postJSON } from '@/lib/api/client'
 import { clientConfig, serverConfig } from '@/lib/config'
 import { mockProjects } from '@/lib/mock'
 import { validateProjectName, validateDateString, validateNotes } from '@/lib/utils'
+import { createLogger } from '@/lib/logger'
 import type { Project, CreateProjectRequest } from '@/lib/types'
 
+const logger = createLogger({ route: 'api/projects' })
+
 export async function GET() {
+  logger.info('Fetching projects')
   // Mock mode
   if (serverConfig.mockMode) {
     return NextResponse.json<Project[]>(mockProjects)
@@ -21,12 +25,12 @@ export async function GET() {
   // Real API mode
   try {
     // Mac API returns wrapped response: {projects: Project[], count: number}
-    const response = await fetchJSON<{projects: Project[], count: number}>(
+    const response = await fetchJSON<{ projects: Project[], count: number }>(
       `${serverConfig.apiBaseUrl}/projects`
     )
     return NextResponse.json(response.projects)
   } catch (error) {
-    console.error('Failed to fetch projects:', error)
+    logger.error({ error }, 'Failed to fetch projects')
     // Return empty array to prevent client-side errors
     return NextResponse.json<Project[]>([])
   }
@@ -75,7 +79,7 @@ export async function POST(request: NextRequest) {
     )
     return NextResponse.json(createdProject, { status: 201 })
   } catch (error) {
-    console.error('Failed to create project:', error)
+    logger.error({ error }, 'Failed to create project')
     return NextResponse.json(
       { error: 'Failed to create project' },
       { status: 500 }

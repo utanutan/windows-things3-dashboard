@@ -40,3 +40,11 @@ next-env.d.ts
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# logs
+/logs/*.log
+!/logs/.gitkeep
+
+# monitoring
+/monitoring/positions.yaml
+/monitoring/vlogs-data/

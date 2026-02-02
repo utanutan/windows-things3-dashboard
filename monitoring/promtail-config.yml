@@ -1,0 +1,21 @@
+server:
+  http_listen_port: 9081
+  grpc_listen_port: 0
+
+positions:
+  filename: /home/serveruser/workspace/windows-things3-dashboard/monitoring/positions.yaml
+
+clients:
+  - url: http://localhost:9428/insert/loki/api/v1/push
+    tenant_id: ""
+
+scrape_configs:
+  # Things3 Dashboard application logs
+  - job_name: things3-dashboard
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: things3-dashboard
+          source: things3-dashboard
+          __path__: /home/serveruser/workspace/windows-things3-dashboard/logs/*.log
