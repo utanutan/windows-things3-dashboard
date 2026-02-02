@@ -5,12 +5,13 @@
  * Individual task display with checkbox, title, tags, due date
  */
 
-import { DocumentTextIcon } from '@heroicons/react/24/outline'
+import { DocumentTextIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import { Checkbox } from '@/components/ui/Checkbox'
 import { Tag } from '@/components/ui/Tag'
 import type { Task } from '@/lib/types'
 import { formatRelativeDate, getDateStatus } from '@/lib/utils'
 import { cn } from '@/lib/utils'
+import { useState } from 'react'
 
 export interface TaskItemProps {
   /** Task data */
@@ -38,6 +39,19 @@ export function TaskItem({
   const isCompleted = task.status === 'completed'
   const hasNotes = !!task.notes && task.notes.length > 0
   const dateStatus = task.due_date ? getDateStatus(task.due_date) : null
+  const [copySuccess, setCopySuccess] = useState(false)
+
+  const handleCopyTask = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    try {
+      const taskJson = JSON.stringify(task, null, 2)
+      await navigator.clipboard.writeText(taskJson)
+      setCopySuccess(true)
+      setTimeout(() => setCopySuccess(false), 2000)
+    } catch (error) {
+      console.error('Failed to copy task:', error)
+    }
+  }
 
   return (
     <div
@@ -118,6 +132,22 @@ export function TaskItem({
           </div>
         )}
       </div>
+
+      {/* Copy Button */}
+      <button
+        onClick={handleCopyTask}
+        className={cn(
+          'flex-shrink-0 p-2 rounded-lg transition-all',
+          'opacity-0 group-hover:opacity-100',
+          copySuccess
+            ? 'bg-status-success/10 text-status-success'
+            : 'hover:bg-background-selected text-text-tertiary hover:text-text-primary'
+        )}
+        aria-label="Copy task as JSON"
+        title={copySuccess ? 'Copied!' : 'Copy task as JSON'}
+      >
+        <ClipboardDocumentIcon className="w-4 h-4" />
+      </button>
     </div>
   )
 }

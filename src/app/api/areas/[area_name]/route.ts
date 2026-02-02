@@ -31,8 +31,7 @@ export async function GET(
 
   // Real API mode
   try {
-    // Mac API /areas/{area_name} returns text summary, not structured data
-    // Workaround: Fetch projects list and filter by area
+    // Fetch projects list and filter by area
     const projectsResponse = await fetchJSON<{projects: Project[], count: number}>(
       `${serverConfig.apiBaseUrl}/projects`
     )
@@ -43,10 +42,32 @@ export async function GET(
       (p) => (p as any).area === area_name || p.area_id === area_name
     )
 
+    // Try to fetch standalone tasks for this area
+    let standaloneTasks: Task[] = []
+    try {
+      // Try endpoint: /areas/{area_name}/todos
+      const tasksResponse = await fetchJSON<{tasks: Task[], count: number}>(
+        `${serverConfig.apiBaseUrl}/areas/${encodeURIComponent(area_name)}/todos`
+      )
+      standaloneTasks = tasksResponse.tasks
+    } catch (tasksError) {
+      console.warn(`No standalone tasks endpoint for area ${area_name}, trying alternative...`)
+      // Alternative: try /todos?area={area_name}
+      try {
+        const tasksResponse = await fetchJSON<{tasks: Task[], count: number}>(
+          `${serverConfig.apiBaseUrl}/todos?area=${encodeURIComponent(area_name)}`
+        )
+        standaloneTasks = tasksResponse.tasks
+      } catch (altError) {
+        console.warn(`Alternative endpoint also failed for area ${area_name}`)
+        // If both fail, standalone_tasks will remain empty array
+      }
+    }
+
     // Return AreaDetail structure
     const areaDetail: AreaDetail = {
       projects: areaProjects,
-      standalone_tasks: [] // Mac API doesn't provide standalone tasks endpoint
+      standalone_tasks: standaloneTasks
     }
 
     return NextResponse.json(areaDetail)

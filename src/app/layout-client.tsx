@@ -62,14 +62,16 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
       : 'connecting'
 
   // Group projects by area
+  // Mac API uses 'area' field, TypeScript type expects 'area_id'
   const projectsByArea =
     projects?.reduce(
       (acc, project) => {
-        if (project.area_id) {
-          if (!acc[project.area_id]) {
-            acc[project.area_id] = []
+        const areaId = project.area_id || (project as any).area
+        if (areaId) {
+          if (!acc[areaId]) {
+            acc[areaId] = []
           }
-          acc[project.area_id].push(project)
+          acc[areaId].push(project)
         }
         return acc
       },

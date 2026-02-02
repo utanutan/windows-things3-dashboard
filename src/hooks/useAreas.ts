@@ -20,10 +20,7 @@ async function fetcher<T>(url: string): Promise<T> {
  * Hook for all areas
  */
 export function useAreas() {
-  return useSWR<Area[]>('/api/areas', fetcher, {
-    refreshInterval: 300000, // 5 minutes
-    revalidateOnFocus: false,
-  })
+  return useSWR<Area[]>('/api/areas', fetcher)
 }
 
 /**
@@ -32,11 +29,7 @@ export function useAreas() {
 export function useAreaDetail(areaName: string) {
   return useSWR<AreaDetail>(
     areaName ? `/api/areas/${encodeURIComponent(areaName)}` : null,
-    fetcher,
-    {
-      refreshInterval: 60000,
-      revalidateOnFocus: true,
-    }
+    fetcher
   )
 }
 
@@ -44,10 +37,7 @@ export function useAreaDetail(areaName: string) {
  * Hook for all projects
  */
 export function useProjects() {
-  return useSWR<Project[]>('/api/projects', fetcher, {
-    refreshInterval: 300000,
-    revalidateOnFocus: false,
-  })
+  return useSWR<Project[]>('/api/projects', fetcher)
 }
 
 /**
@@ -58,11 +48,7 @@ export function useProjectTasks(projectName: string) {
     projectName
       ? `/api/projects/${encodeURIComponent(projectName)}/tasks`
       : null,
-    fetcher,
-    {
-      refreshInterval: 60000,
-      revalidateOnFocus: true,
-    }
+    fetcher
   )
 }
 

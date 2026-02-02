@@ -31,33 +31,21 @@ async function fetcher<T>(url: string): Promise<T> {
  * Hook for inbox tasks
  */
 export function useInbox() {
-  return useSWR<Task[]>('/api/tasks/inbox', fetcher, {
-    refreshInterval: 60000, // Auto-refresh every 60 seconds
-    revalidateOnFocus: true,
-    dedupingInterval: 2000,
-  })
+  return useSWR<Task[]>('/api/tasks/inbox', fetcher)
 }
 
 /**
  * Hook for today tasks
  */
 export function useToday() {
-  return useSWR<Task[]>('/api/tasks/today', fetcher, {
-    refreshInterval: 60000,
-    revalidateOnFocus: true,
-    dedupingInterval: 2000,
-  })
+  return useSWR<Task[]>('/api/tasks/today', fetcher)
 }
 
 /**
  * Hook for upcoming tasks
  */
 export function useUpcoming() {
-  return useSWR<Task[]>('/api/tasks/upcoming', fetcher, {
-    refreshInterval: 60000,
-    revalidateOnFocus: true,
-    dedupingInterval: 2000,
-  })
+  return useSWR<Task[]>('/api/tasks/upcoming', fetcher)
 }
 
 /**

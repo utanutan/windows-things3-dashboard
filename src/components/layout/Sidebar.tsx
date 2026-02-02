@@ -257,14 +257,18 @@ export function Sidebar({
           </div>
 
           {areas.length > 0 ? (
-            areas.map((area) => (
-              <AreaSection
-                key={area.id}
-                area={area}
-                projects={projectsByArea[area.id] || []}
-                onNewProject={onNewProject}
-              />
-            ))
+            areas.map((area) => {
+              // Try both area.id and area.name as keys (Mac API compatibility)
+              const areaProjects = projectsByArea[area.id] || projectsByArea[area.name] || []
+              return (
+                <AreaSection
+                  key={area.id}
+                  area={area}
+                  projects={areaProjects}
+                  onNewProject={onNewProject}
+                />
+              )
+            })
           ) : (
             <p className="px-4 text-sm text-text-tertiary italic">
               No areas yet
