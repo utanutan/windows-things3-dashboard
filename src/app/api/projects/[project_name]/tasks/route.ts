@@ -31,9 +31,24 @@ export async function GET(
 
   // Real API mode
   try {
+    // First, get all projects to find the project ID by name
+    const projectsResponse = await fetchJSON<{projects: Project[], count: number}>(
+      `${serverConfig.apiBaseUrl}/projects`
+    )
+
+    // Find the project by name
+    const project = projectsResponse.projects.find(
+      (p) => p.name === project_name
+    )
+
+    if (!project) {
+      console.warn(`Project not found: ${project_name}`)
+      return NextResponse.json<Task[]>([])
+    }
+
     // Mac API returns: {tasks: Task[], count: number}
     const response = await fetchJSON<{tasks: Task[], count: number}>(
-      `${serverConfig.apiBaseUrl}/projects/${encodeURIComponent(project_name)}/todos`
+      `${serverConfig.apiBaseUrl}/projects/${project.id}/todos`
     )
     return NextResponse.json(response.tasks)
   } catch (error) {
