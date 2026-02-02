@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Primary Colors */
+  --color-primary: #4A90E2;
+  --color-primary-hover: #357ABD;
+  --color-primary-light: #E8F4FD;
+  --color-primary-dark: #2E5F8D;
+
+  /* Background Colors */
+  --color-background-main: #FFFFFF;
+  --color-background-sidebar: #F7F7F7;
+  --color-background-hover: #F0F0F0;
+  --color-background-selected: #E8F4FD;
+  --color-background-overlay: rgba(0, 0, 0, 0.3);
+
+  /* Border Colors */
+  --color-border-light: #E5E5E5;
+  --color-border-medium: #D1D1D1;
+  --color-divider: #EBEBEB;
+
+  /* Text Colors */
+  --color-text-primary: #1C1C1E;
+  --color-text-secondary: #6E6E73;
+  --color-text-tertiary: #AEAEB2;
+  --color-text-disabled: #C7C7CC;
+
+  /* Status Colors */
+  --color-success: #34C759;
+  --color-warning: #FF9500;
+  --color-error: #FF3B30;
+  --color-info: #5AC8FA;
+
+  /* Tag Colors */
+  --color-tag-red: #FF6B6B;
+  --color-tag-orange: #FFB366;
+  --color-tag-yellow: #FFE066;
+  --color-tag-green: #95E1D3;
+  --color-tag-blue: #83C5F7;
+  --color-tag-purple: #C4B5FD;
+  --color-tag-pink: #FDB5C8;
+  --color-tag-gray: #C7C7CC;
+
+  /* Checkbox Colors */
+  --color-checkbox-unchecked: #D1D1D6;
+  --color-checkbox-checked: #34C759;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Transitions */
+  --transition-fast: all 0.1s ease;
+  --transition-default: all 0.15s ease;
+  --transition-normal: all 0.2s ease;
+  --transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--color-text-primary);
+  background-color: var(--color-background-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+}
+
+/* Focus visible styles for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.3s ease;
+}
+
+.active\:scale-98:active {
+  transform: scale(0.98);
+}

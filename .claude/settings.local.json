@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash ../../scripts/subagent-prompt-generator.sh:*)",
+      "Bash(bash:*)",
+      "Bash(export PATH=\"$HOME/bin:$PATH\")",
+      "WebSearch",
+      "Bash(wc:*)",
+      "Bash(node:*)",
+      "Bash(npm:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(tailscale status:*)",
+      "Bash(ssh mac:*)",
+      "Bash(taskkill:*)",
+      "Bash(python3:*)",
+      "Bash(curl:*)"
+    ]
+  }
+}
