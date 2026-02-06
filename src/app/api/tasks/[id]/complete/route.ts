@@ -7,7 +7,7 @@ import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
 import { putJSON } from '@/lib/api/client'
 import { serverConfig } from '@/lib/config'
-import { getMockTaskById } from '@/lib/mock'
+import { getMockTaskById, updateMockTaskStatus } from '@/lib/mock'
 import { applyRateLimit, handleAPIError } from '@/lib/api-helpers'
 import type { Task } from '@/lib/types'
 
@@ -32,12 +32,10 @@ export async function PUT(
       return NextResponse.json({ error: 'Task not found' }, { status: 404 })
     }
 
-    // Return completed task
-    const completedTask: Task = {
-      ...mockTask,
-      status: 'completed',
-    }
-    return NextResponse.json<Task>(completedTask)
+    // Toggle status: open → completed, completed → open
+    const newStatus = mockTask.status === 'completed' ? 'open' : 'completed'
+    const updatedTask = updateMockTaskStatus(id, newStatus)
+    return NextResponse.json<Task>(updatedTask || { ...mockTask, status: newStatus })
   }
 
   // Real API mode

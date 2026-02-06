@@ -86,6 +86,12 @@ export const useUIStore = create<UIStore>((set, get) => ({
     set((state) => ({
       toasts: [...state.toasts, { id, message, type }],
     }))
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+      set((state) => ({
+        toasts: state.toasts.filter((toast) => toast.id !== id),
+      }))
+    }, 3000)
   },
   removeToast: (id) =>
     set((state) => ({
