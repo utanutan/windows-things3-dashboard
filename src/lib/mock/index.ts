@@ -12,6 +12,7 @@ export {
   getMockTasks,
   searchMockTasks,
   getMockTaskById,
+  updateMockTaskStatus,
 } from './tasks'
 
 export {

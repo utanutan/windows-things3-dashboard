@@ -1,13 +1,14 @@
 /**
  * Mock task data for development and testing
+ * Uses mutable state so status changes persist during a session
  */
 
-import type { Task } from '../types'
+import type { Task, TaskStatus } from '../types'
 
 /**
- * Mock tasks for Inbox
+ * Initial mock tasks for Inbox
  */
-export const mockInboxTasks: Task[] = [
+const initialInboxTasks: Task[] = [
   {
     id: 'inbox-1',
     title: 'Review project proposal',
@@ -40,9 +41,9 @@ export const mockInboxTasks: Task[] = [
 ]
 
 /**
- * Mock tasks for Today
+ * Initial mock tasks for Today
  */
-export const mockTodayTasks: Task[] = [
+const initialTodayTasks: Task[] = [
   {
     id: 'today-1',
     title: 'Complete quarterly report',
@@ -70,9 +71,9 @@ export const mockTodayTasks: Task[] = [
 ]
 
 /**
- * Mock tasks for Upcoming
+ * Initial mock tasks for Upcoming
  */
-export const mockUpcomingTasks: Task[] = [
+const initialUpcomingTasks: Task[] = [
   {
     id: 'upcoming-1',
     title: 'Prepare presentation slides',
@@ -109,7 +110,7 @@ export const mockUpcomingTasks: Task[] = [
 /**
  * Mock tasks for a specific project
  */
-export const mockProjectTasks: Task[] = [
+const initialProjectTasks: Task[] = [
   {
     id: 'project-task-1',
     title: 'Design database schema',
@@ -139,7 +140,7 @@ export const mockProjectTasks: Task[] = [
 /**
  * Mock tasks for an area (standalone, not in projects)
  */
-export const mockAreaTasks: Task[] = [
+const initialAreaTasks: Task[] = [
   {
     id: 'area-task-1',
     title: 'Research new technologies',
@@ -159,15 +160,46 @@ export const mockAreaTasks: Task[] = [
 ]
 
 /**
- * All mock tasks combined
+ * Mutable mock state - deep clone initial data so mutations don't affect originals
  */
-export const allMockTasks: Task[] = [
-  ...mockInboxTasks,
-  ...mockTodayTasks,
-  ...mockUpcomingTasks,
-  ...mockProjectTasks,
-  ...mockAreaTasks,
-]
+let mockInboxTasks: Task[] = JSON.parse(JSON.stringify(initialInboxTasks))
+let mockTodayTasks: Task[] = JSON.parse(JSON.stringify(initialTodayTasks))
+let mockUpcomingTasks: Task[] = JSON.parse(JSON.stringify(initialUpcomingTasks))
+let mockProjectTasks: Task[] = JSON.parse(JSON.stringify(initialProjectTasks))
+let mockAreaTasks: Task[] = JSON.parse(JSON.stringify(initialAreaTasks))
+
+/**
+ * Get all mock task lists as a flat array
+ */
+function getAllMockTasks(): Task[] {
+  return [
+    ...mockInboxTasks,
+    ...mockTodayTasks,
+    ...mockUpcomingTasks,
+    ...mockProjectTasks,
+    ...mockAreaTasks,
+  ]
+}
+
+// Re-export for backward compatibility
+export { mockInboxTasks, mockTodayTasks, mockUpcomingTasks, mockProjectTasks, mockAreaTasks }
+
+export const allMockTasks = getAllMockTasks()
+
+/**
+ * Update a mock task's status by ID across all lists
+ */
+export function updateMockTaskStatus(taskId: string, status: TaskStatus): Task | undefined {
+  const lists = [mockInboxTasks, mockTodayTasks, mockUpcomingTasks, mockProjectTasks, mockAreaTasks]
+  for (const list of lists) {
+    const task = list.find((t) => t.id === taskId)
+    if (task) {
+      task.status = status
+      return task
+    }
+  }
+  return undefined
+}
 
 /**
  * Get mock tasks by filter
@@ -181,7 +213,7 @@ export function getMockTasks(filter: 'inbox' | 'today' | 'upcoming' | 'all'): Ta
     case 'upcoming':
       return mockUpcomingTasks
     case 'all':
-      return allMockTasks
+      return getAllMockTasks()
     default:
       return []
   }
@@ -192,7 +224,7 @@ export function getMockTasks(filter: 'inbox' | 'today' | 'upcoming' | 'all'): Ta
  */
 export function searchMockTasks(query: string): Task[] {
   const lowerQuery = query.toLowerCase()
-  return allMockTasks.filter(
+  return getAllMockTasks().filter(
     (task) =>
       task.title.toLowerCase().includes(lowerQuery) ||
       task.notes?.toLowerCase().includes(lowerQuery) ||
@@ -204,5 +236,5 @@ export function searchMockTasks(query: string): Task[] {
  * Get mock task by ID
  */
 export function getMockTaskById(id: string): Task | undefined {
-  return allMockTasks.find((task) => task.id === id)
+  return getAllMockTasks().find((task) => task.id === id)
 }

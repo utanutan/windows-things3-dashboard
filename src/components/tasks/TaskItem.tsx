@@ -83,7 +83,7 @@ export function TaskItem({
         <div className="flex items-start gap-2">
           <h3
             className={cn(
-              'text-base flex-1',
+              'text-base flex-1 break-words',
               isCompleted
                 ? 'text-text-secondary line-through'
                 : 'text-text-primary font-medium'
@@ -99,6 +99,18 @@ export function TaskItem({
             />
           )}
         </div>
+
+        {/* Notes preview */}
+        {hasNotes && (
+          <p
+            className={cn(
+              'text-sm line-clamp-2',
+              isCompleted ? 'text-text-tertiary' : 'text-text-secondary'
+            )}
+          >
+            {task.notes}
+          </p>
+        )}
 
         {/* Tags and due date */}
         {(task.tags || task.due_date) && (
